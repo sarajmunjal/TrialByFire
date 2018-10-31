@@ -1,12 +1,15 @@
 package com.saraj.trialbyfire;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,15 +63,23 @@ public class MyAdapter extends RecyclerView.Adapter implements DataLoadedCallbac
     }
 
     public static final class MyVH extends RecyclerView.ViewHolder {
+        private final ColorGenerator generator;
         @BindView(R.id.tv_list_item)
         TextView textView;
+
+        @BindView(R.id.iv_icon)
+        ImageView icon;
 
         MyVH(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            generator = ColorGenerator.MATERIAL;
         }
 
         void bind(ListData data) {
+            TextDrawable drawable = TextDrawable.builder()
+                    .buildRound(String.valueOf(data.getYear() % 100), generator.getColor(data.getYear()));
+            icon.setImageDrawable(drawable);
             textView.setText(data.getTitle());
         }
     }

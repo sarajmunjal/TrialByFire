@@ -38,7 +38,6 @@ class FirebaseDataProvider implements DataProvider {
     }
 
 
-
     private void arrangeLocalDataCopies(int startIdx, int endIdx, List<ListData> data) {
         for (int i = startIdx; i < endIdx; i++) {
             map.put(i, data.get(i - startIdx));
@@ -51,16 +50,7 @@ class FirebaseDataProvider implements DataProvider {
             db.collection("movies")
                     .orderBy("title")
                     .limit(PAGE_SIZE).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            QuerySnapshot result = task.getResult();
-                            List<ListData> data = result.toObjects(ListData.class);
-                            lastQuery = data.get(data.size() - 1).getTitle();
-                            arrangeLocalDataCopies(0, PAGE_SIZE, data);
-                            callback.onDataLoaded(0);
-                        }
-                    })
+                    .addOnCompleteListener(getOnCompleteListener(pageNumber))
                     .addOnFailureListener(new OnFailureListener() {
 
                         @Override
@@ -74,16 +64,7 @@ class FirebaseDataProvider implements DataProvider {
                     .startAfter(lastQuery)
                     .limit(PAGE_SIZE)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            QuerySnapshot result = task.getResult();
-                            List<ListData> data = result.toObjects(ListData.class);
-                            lastQuery = data.get(data.size() - 1).getTitle();
-                            arrangeLocalDataCopies(pageNumber * PAGE_SIZE, (pageNumber + 1) * PAGE_SIZE, data);
-                            callback.onDataLoaded(pageNumber);
-                        }
-                    });
+                    .addOnCompleteListener(getOnCompleteListener(pageNumber));
         }
     }
 
@@ -92,5 +73,16 @@ class FirebaseDataProvider implements DataProvider {
         return map.size();
     }
 
-
+    private OnCompleteListener<QuerySnapshot> getOnCompleteListener(final int pageNumber) {
+        return new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot result = task.getResult();
+                List<ListData> data = result.toObjects(ListData.class);
+                lastQuery = data.get(data.size() - 1).getTitle();
+                arrangeLocalDataCopies(pageNumber * PAGE_SIZE, (pageNumber + 1) * PAGE_SIZE, data);
+                callback.onDataLoaded(pageNumber);
+            }
+        };
+    }
 }

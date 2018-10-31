@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:id="@+id/ll_list_item"
-    android:gravity="center">
+    android:gravity="center"
+    android:padding="10dp">
+    <ImageView android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/iv_icon"
+        android:layout_margin="5dp"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_list_item"
-        tools:text="Hello saraj"/>
+        tools:text="Hello saraj testing with real big string"
+        android:layout_margin="5dp"
+        android:textSize="24sp"/>
 </LinearLayout>
