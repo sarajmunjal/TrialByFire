@@ -1,1 +1,1 @@
-include ':app', ':prep'
+include ':app'
